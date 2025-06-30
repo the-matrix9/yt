@@ -1,0 +1,10 @@
+2025-06-25T04:42:27.955Z | IP: 127.0.0.1 | URL: https://www.youtube.com/watch?v=CPVji98q1vs&list=RDCPVji98q1vs&start_radio=1 | Type: video | Status: error | Error: spawn yt-dlp ENOENT
+2025-06-25T04:42:37.968Z | IP: 127.0.0.1 | URL: https://www.youtube.com/watch?v=CPVji98q1vs&list=RDCPVji98q1vs&start_radio=1 | Type: instagram | Status: error | Error: spawn yt-dlp ENOENT
+2025-06-25T04:46:40.289Z | IP: 127.0.0.1 | URL: https://www.youtube.com/watch?v=CPVji98q1vs&list=RDCPVji98q1vs&start_radio=1 | Type: video | Status: error | Error: spawn /home/project/bin/yt-dlp EACCES
+2025-06-25T04:52:48.706Z | IP: 127.0.0.1 | URL: cookies-upload | Type: cookies | Status: success
+2025-06-25T04:52:55.298Z | IP: 127.0.0.1 | URL: https://www.youtube.com/watch?v=CPVji98q1vs&list=RDCPVji98q1vs&start_radio=1 | Type: audio | Status: error | Error: spawn /home/project/bin/yt-dlp EACCES
+2025-06-25T06:41:57.564Z | IP: ::1 | URL: https://www.youtube.com/watch?v=GEBDENKzW6A | Type: video | Status: success
+2025-06-25T06:42:14.280Z | IP: ::1 | URL: https://www.instagram.com/reel/DJY4D5-Rhmf/?utm_source=ig_web_copy_link | Type: instagram | Status: success
+2025-06-25T06:43:44.841Z | IP: ::1 | URL: https://www.instagram.com/reel/DJY4D5-Rhmf/?utm_source=ig_web_copy_link | Type: instagram | Status: success
+2025-06-25T06:44:02.339Z | IP: ::1 | URL: https://www.instagram.com/reel/DJY4D5-Rhmf/?utm_source=ig_web_copy_link | Type: instagram | Status: success
+2025-06-25T06:45:08.471Z | IP: ::1 | URL: https://www.instagram.com/reel/DJY4D5-Rhmf/?utm_source=ig_web_copy_link | Type: video | Status: success

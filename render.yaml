@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: media-downloader-pro
+    env: node
+    plan: free
+    buildCommand: npm install && npm run install-ytdlp
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+    disk:
+      name: media-downloader-disk
+      mountPath: /opt/render/project/temp
+      sizeGB: 1

@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Downloader Pro - YouTube & Instagram with Cookies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8B5CF6;
+            --primary-dark: #7C3AED;
+            --secondary: #3B82F6;
+            --accent: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --border: #E5E7EB;
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --shadow-lg: 0 35px 60px -12px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .cookies-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .youtube-icon {
+            width: 32px;
+            height: 32px;
+            background: #FF0000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .instagram-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .file-input-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem 1.25rem;
+            border: 2px dashed var(--border);
+            border-radius: 16px;
+            background: rgba(139, 92, 246, 0.05);
+            color: var(--dark);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-input-label:hover {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .cookies-status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cookies-status.active {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: #065f46;
+        }
+
+        .cookies-status.inactive {
+            background: rgba(107, 114, 128, 0.1);
+            border: 1px solid rgba(107, 114, 128, 0.2);
+            color: #374151;
+        }
+
+        .cookies-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .delete-cookies-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delete-cookies-btn:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-size: 0.95rem;
+            color: var(--dark);
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-cookies {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: white;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-cookies:hover:not(:disabled) {
+            background: linear-gradient(135deg, #D97706, #B45309);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-youtube {
+            background: linear-gradient(135deg, #FF0000, #CC0000);
+            color: white;
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
+        }
+
+        .btn-youtube:hover:not(:disabled) {
+            background: linear-gradient(135deg, #CC0000, #990000);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 0, 0, 0.4);
+        }
+
+        .btn-instagram {
+            background: linear-gradient(135deg, #E4405F, #C13584);
+            color: white;
+            box-shadow: 0 8px 25px rgba(193, 53, 132, 0.3);
+        }
+
+        .btn-instagram:hover:not(:disabled) {
+            background: linear-gradient(135deg, #C13584, #833AB4);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(193, 53, 132, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-text {
+            transition: opacity 0.3s ease;
+        }
+
+        .loading {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result {
+            margin-top: 1.5rem;
+            padding: 1.25rem;
+            border-radius: 16px;
+            font-weight: 500;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result.success {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            color: #166534;
+            border: 2px solid #86efac;
+        }
+
+        .result.error {
+            background: linear-gradient(135deg, #fef2f2, #fecaca);
+            color: #dc2626;
+            border: 2px solid #fca5a5;
+        }
+
+        .download-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .download-link:hover {
+            background: rgba(139, 92, 246, 0.2);
+            transform: translateX(4px);
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 1rem;
+            margin-top: 3rem;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .status-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: none;
+        }
+
+        .status-indicator.online {
+            color: var(--accent);
+            border-left: 4px solid var(--accent);
+        }
+
+        .status-indicator.offline {
+            color: var(--danger);
+            border-left: 4px solid var(--danger);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .card {
+                padding: 2rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .card-title {
+                font-size: 1.5rem;
+            }
+
+            .container {
+                padding: 0 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .btn {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="status-indicator" id="statusIndicator">
+        🟢 System Online
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Media Downloader Pro</h1>
+            <p>Download YouTube videos & Instagram reels with cookies support</p>
+        </div>
+
+
+        <!-- YouTube Downloader -->
+        <div class="card">
+            <h2 class="card-title">
+                <div class="youtube-icon">▶</div>
+                YouTube Downloader
+            </h2>
+            <form id="youtubeForm">
+                <div class="form-group">
+                    <label for="youtubeUrl">YouTube Video URL</label>
+                    <div class="input-container">
+                        <input 
+                            type="url" 
+                            id="youtubeUrl" 
+                            class="form-input" 
+                            placeholder="https://www.youtube.com/watch?v=..."
+                            required
+                        >
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="audioOnly" class="checkbox">
+                        <label for="audioOnly" class="checkbox-label">🎵 Audio only (MP3 format)</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-youtube" id="youtubeBtn">
+                    <span class="btn-text">📥 Download from YouTube</span>
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <span>Downloading...</span>
+                    </div>
+                </button>
+            </form>
+            <div id="youtubeResult" class="result"></div>
+        </div>
+
+        <!-- Instagram Downloader -->
+        <div class="card">
+            <h2 class="card-title">
+                <div class="instagram-icon">📷</div>
+                Instagram Reel Downloader
+            </h2>
+            <form id="instagramForm">
+                <div class="form-group">
+                    <label for="instagramUrl">Instagram Reel URL</label>
+                    <div class="input-container">
+                        <input 
+                            type="url" 
+                            id="instagramUrl" 
+                            class="form-input" 
+                            placeholder="https://www.instagram.com/reel/..."
+                            required
+                        >
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-instagram" id="instagramBtn">
+                    <span class="btn-text">📥 Download from Instagram</span>
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <span>Downloading...</span>
+                    </div>
+                </button>
+            </form>
+            <div id="instagramResult" class="result"></div>
+        </div>
+
+        <div class="footer">
+            <p>🚀 Built with yt-dlp & cookies support • Made with ❤️ for seamless media downloading</p>
+        </div>
+    </div>
+
+    <script>
+        // Check server status and cookies
+        async function checkStatus() {
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                const indicator = document.getElementById('statusIndicator');
+                
+                if (response.ok && data.status === 'OK') {
+                    indicator.textContent = '🟢 System Online';
+                    indicator.className = 'status-indicator online';
+                } else {
+                    indicator.textContent = '🔴 System Issues';
+                    indicator.className = 'status-indicator offline';
+                }
+                indicator.style.display = 'block';
+                
+                setTimeout(() => {
+                    indicator.style.display = 'none';
+                }, 3000);
+            } catch (error) {
+                const indicator = document.getElementById('statusIndicator');
+                indicator.textContent = '🔴 System Offline';
+                indicator.className = 'status-indicator offline';
+                indicator.style.display = 'block';
+                
+                setTimeout(() => {
+                    indicator.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+
+        // YouTube form handler
+        document.getElementById('youtubeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const url = document.getElementById('youtubeUrl').value.trim();
+            const audioOnly = document.getElementById('audioOnly').checked;
+            const btn = document.getElementById('youtubeBtn');
+            const result = document.getElementById('youtubeResult');
+            
+            if (!url) {
+                showResult(result, 'error', 'Please enter a valid YouTube URL');
+                return;
+            }
+            
+            // Show loading state
+            setLoadingState(btn, true);
+            result.style.display = 'none';
+            
+            try {
+                const params = new URLSearchParams({ url });
+                if (audioOnly) params.append('audio', '1');
+                
+                console.log(`Starting ${audioOnly ? 'audio' : 'video'} download...`);
+                
+                const response = await fetch(`/youtube?${params}`);
+                
+                if (response.ok) {
+                    // Handle file download
+                    const blob = await response.blob();
+                    const downloadUrl = window.URL.createObjectURL(blob);
+                    const contentDisposition = response.headers.get('Content-Disposition');
+                    
+                    let filename = `youtube_${audioOnly ? 'audio' : 'video'}_${Date.now()}`;
+                    if (contentDisposition) {
+                        const matches = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                        if (matches && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, '');
+                        }
+                    }
+                    
+                    // Create download link
+                    const a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(downloadUrl);
+                    
+                    showResult(result, 'success', 
+                        `🎉 ${audioOnly ? 'Audio' : 'Video'} download started successfully!<br>
+                        <small>Check your downloads folder for the file.</small>`
+                    );
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Download failed');
+                }
+            } catch (error) {
+                console.error('YouTube download error:', error);
+                showResult(result, 'error', `❌ Error: ${error.message}`);
+            } finally {
+                setLoadingState(btn, false);
+            }
+        });
+
+        // Instagram form handler
+        document.getElementById('instagramForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const url = document.getElementById('instagramUrl').value.trim();
+            const btn = document.getElementById('instagramBtn');
+            const result = document.getElementById('instagramResult');
+            
+            if (!url) {
+                showResult(result, 'error', 'Please enter a valid Instagram URL');
+                return;
+            }
+            
+            // Show loading state
+            setLoadingState(btn, true);
+            result.style.display = 'none';
+            
+            try {
+                const params = new URLSearchParams({ url });
+                const response = await fetch(`/instagram?${params}`);
+                
+                console.log('Instagram fetch response:', {
+                    status: response.status,
+                    ok: response.ok,
+                    contentType: response.headers.get('Content-Type')
+                });
+
+                if (response.ok) {
+                    // Handle file download
+                    const blob = await response.blob();
+                    const downloadUrl = window.URL.createObjectURL(blob);
+                    const contentDisposition = response.headers.get('Content-Disposition');
+                    
+                    let filename = `instagram_video_${Date.now()}`;
+                    if (contentDisposition) {
+                        const matches = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                        if (matches && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, '');
+                        }
+                    }
+                    
+                    // Create download link
+                    const a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(downloadUrl);
+                    
+                    showResult(result, 'success', 
+                        `🎉 Instagram video download started successfully!<br>
+                        <small>Check your downloads folder for the file.</small>`
+                    );
+                } else {
+                    // If response is not OK, check content type for error details
+                    const contentType = response.headers.get('Content-Type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Download failed', { cause: errorData.details });
+                    } else {
+                        // If not JSON, it's likely a non-standard error or unexpected content
+                        throw new Error(`Server responded with status ${response.status} ${response.statusText} and unexpected content type.`);
+                    }
+                }
+            } catch (error) {
+                console.error('Instagram download error:', error);
+                let errorMessage = `❌ Error: ${error.message}`;
+                if (error.cause) {
+                    errorMessage += `<br><small>Details: ${error.cause}</small>`;
+                }
+                showResult(result, 'error', errorMessage);
+            } finally {
+                setLoadingState(btn, false);
+            }
+        });
+
+        // Helper functions
+        function setLoadingState(btn, loading) {
+            btn.disabled = loading;
+            const btnText = btn.querySelector('.btn-text');
+            const loadingEl = btn.querySelector('.loading');
+            
+            if (loading) {
+                btnText.style.display = 'none';
+                loadingEl.style.display = 'flex';
+            } else {
+                btnText.style.display = 'inline';
+                loadingEl.style.display = 'none';
+            }
+        }
+
+        function showResult(resultEl, type, message) {
+            resultEl.className = `result ${type}`;
+            resultEl.innerHTML = message;
+            resultEl.style.display = 'block';
+            
+            // Auto-hide success messages after 10 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    resultEl.style.display = 'none';
+                }, 10000);
+            }
+        }
+
+
+        // Add some interactive feedback
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('paste', (e) => {
+                setTimeout(() => {
+                    if (input.value) {
+                        input.style.borderColor = 'var(--accent)';
+                        setTimeout(() => {
+                            input.style.borderColor = '';
+                        }, 1000);
+                    }
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
